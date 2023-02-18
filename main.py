@@ -7,6 +7,9 @@ pygame.init()
 screen = pygame.display.set_mode((ICON_WIDTH, ICON_HEIGHT))
 pygame.display.set_caption('Duck Hunt')
 
+bg_sound = pygame.mixer.Sound("sounds/relax_music.mp3")
+bg_sound.set_volume(0.1)
+
 running = True
 while running:
     pygame.display.update()
