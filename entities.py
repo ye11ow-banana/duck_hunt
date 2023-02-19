@@ -7,10 +7,17 @@ class Bird:
     def __init__(self, level):
         self.is_killed = False
         self.level = level
-        self.speed = None
-        self.images = None
-        self.non_spawned_border = None
-        self.position = None
+        self.speed = self._get_speed()
+        self.images = self._get_bird_images()
+        self.non_spawned_border = NonSpawnedBorder(left=100, top=500, right=200, bottom=50)
+        self.position = self._get_random_position()
+        self._move()
+
+    def _move(self) -> None:
+        return
+
+    def _get_speed(self) -> None:
+        return
 
     def _get_bird_images(self) -> BirdImages:
         bird_directions = {}
@@ -29,3 +36,6 @@ class Bird:
             right=bird_directions['right'],
             bottom=bird_directions['bottom']
         )
+
+    def _get_random_position(self) -> None:
+        return
