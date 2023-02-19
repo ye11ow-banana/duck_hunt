@@ -1,6 +1,10 @@
 import pygame
 from consts import ICON_WIDTH, ICON_HEIGHT
-from images import icon, background, crosshair, bird_images
+
+
+icon = pygame.image.load('images/icon.png')
+background = pygame.image.load('images/background.webp')
+crosshair = pygame.image.load('images/crosshair.jpg')
 
 clock = pygame.time.Clock()
 pygame.init()
