@@ -4,6 +4,7 @@ from consts import WINDOW_WIDTH, WINDOW_HEIGHT, background_colors
 from utils import get_level, get_music
 
 icon = pygame.image.load('images/icon.png')
+pygame.display.set_icon(icon)
 background = pygame.image.load('images/background.webp')
 crosshair = pygame.image.load('images/crosshair.jpg')
 
@@ -16,7 +17,6 @@ level = get_level()
 
 music = get_music(level)
 music.set_volume(0.05)
-music.play()
 
 screen.fill(background_colors[level])
 
@@ -28,5 +28,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                music.play()
+            elif event.key == pygame.K_2:
+                music.stop()
 
     clock.tick(9)
