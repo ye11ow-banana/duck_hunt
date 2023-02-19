@@ -15,12 +15,14 @@ pygame.display.set_caption('Duck Hunt')
 level = get_level()
 
 music = get_music(level)
-music.set_volume(0.1)
+music.set_volume(0.05)
+music.play()
 
 screen.fill(background_colors[level])
 
 running = True
 while running:
+    screen.blit(background, (0, 0))
     pygame.display.update()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
