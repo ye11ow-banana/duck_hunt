@@ -23,8 +23,9 @@ class Bird:
         self.position.x += 1
         self.function_position.x += 1
 
-    def _linear_function(self):
-        pass
+    @staticmethod
+    def _linear_function(x, y):
+        return y - 0.25 * x
 
     @staticmethod
     def _root_function(x, y):
