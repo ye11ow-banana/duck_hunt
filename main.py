@@ -19,18 +19,17 @@ level = get_level()
 music = get_music(level)
 music.set_volume(0.05)
 
-screen.fill(background_colors[level])
-
 birds = []
 bird_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(bird_timer, 2500)
+bird = Bird(level)
 
 running = True
 while running:
+    screen.fill(background_colors[level])
+    screen.blit(bird.images.top[0], (bird.position.x, bird.position.y))
+    bird.move()
     screen.blit(background, (0, 0))
-
-    for bird in birds:
-        screen.blit(bird.images.top[0], (bird.position.x, bird.position.y))
 
     pygame.display.update()
     for event in pygame.event.get():

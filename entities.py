@@ -1,3 +1,4 @@
+import math
 from random import randint
 
 import pygame
@@ -10,14 +11,36 @@ class Bird:
     def __init__(self, level):
         self.is_killed = False
         self.level = level
-        self.speed = self._get_speed()
+        self.speed = 5
         self.images = self._get_bird_images()
         self.non_spawned_border = NonSpawnedBorder(left=250, top=500, right=300, bottom=100)
+        self.math_function = self._get_math_function()
         self.position = self._get_random_position()
-        self._move()
+        self.function_x = 0
+        self.function_y = self.position.y
 
-    def _move(self) -> None:
-        return
+    def move(self) -> None:
+        self.position.y = self.math_function(self.function_x, self.function_y)
+        self.position.x += 1
+        self.function_x += 1
+
+    def _linear_function(self):
+        pass
+
+    @staticmethod
+    def _root_function(x, y):
+        return y - 10 * math.sqrt(x)
+
+    def _in_power_function(self):
+        pass
+
+    def _get_math_function(self):
+        math_function_by_level = {
+            LEVELS[0]: [self._root_function],
+            LEVELS[1]: [self._root_function],
+            LEVELS[2]: [self._root_function]
+        }
+        return math_function_by_level[self.level][0]
 
     def _get_speed(self) -> int:
         level_speeds = {LEVELS[0]: [5], LEVELS[1]: [5, 7], LEVELS[2]: [5, 7, 9]}
@@ -42,7 +65,7 @@ class Bird:
             bottom=bird_directions['bottom']
         )
 
-    def _get_random_position(self) -> BirdPosition:
+    def _get_random_position(self):
         x = randint(self.non_spawned_border.left, WINDOW_WIDTH - self.non_spawned_border.right)
-        y = randint(self.non_spawned_border.top, WINDOW_HEIGHT - self.non_spawned_border.bottom)
-        return BirdPosition(x=x, y=y)
+        y = self.math_function(x, WINDOW_HEIGHT)
+        return BirdPosition(x, y)
