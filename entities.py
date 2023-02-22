@@ -31,8 +31,9 @@ class Bird:
     def _root_function(x, y):
         return y - 10 * math.sqrt(x)
 
-    def _in_power_function(self):
-        pass
+    @staticmethod
+    def _in_power_function(x, y):
+        return y - 0.002 * x ** 2
 
     def _get_math_function(self):
         math_function_by_level = {
