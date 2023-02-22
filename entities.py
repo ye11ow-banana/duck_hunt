@@ -16,8 +16,31 @@ class Bird:
         self.non_spawned_border = NonSpawnedBorder(left=250, top=500, right=300, bottom=100)
         self.current_position = self._get_random_position()
         self.initial_position = BirdPosition(self.current_position.x, self.current_position.y)
+        self.previous_y = self.current_position.y
+        self.serial_image_indexes = {}
 
-    def move(self) -> None:
+    def __getattribute__(self, item):
+        if item == 'get_current_image':
+            self._move()
+        return super().__getattribute__(item)
+
+    def get_current_image(self):
+        if self.previous_y - self.current_position.y < 0.3:
+            return self._get_serial_image_by_direction('right')
+        elif self.previous_y - self.current_position.y < 10:
+            return self._get_serial_image_by_direction('top_right')
+        else:
+            return self._get_serial_image_by_direction('right')
+
+    def _get_serial_image_by_direction(self, direction):
+        index = self.serial_image_indexes.get(direction, 0) + 1
+        index = index if index < len(getattr(self.images, direction)) else 0
+        image = getattr(self.images, direction)[index]
+        self.serial_image_indexes = {direction: index}
+        return image
+
+    def _move(self) -> None:
+        self.previous_y = self.current_position.y
         self.current_position.x += 1
         self.current_position.y = self._math_function(self.current_position.x)
 
