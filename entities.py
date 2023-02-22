@@ -16,13 +16,12 @@ class Bird:
         self.non_spawned_border = NonSpawnedBorder(left=250, top=500, right=300, bottom=100)
         self.math_function = self._get_math_function()
         self.position = self._get_random_position()
-        self.function_x = 0
-        self.function_y = self.position.y
+        self.function_position = BirdPosition(0, self.position.y)
 
     def move(self) -> None:
-        self.position.y = self.math_function(self.function_x, self.function_y)
+        self.position.y = self.math_function(self.function_position.x, self.function_position.y)
         self.position.x += 1
-        self.function_x += 1
+        self.function_position.x += 1
 
     def _linear_function(self):
         pass
