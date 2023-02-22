@@ -14,28 +14,30 @@ class Bird:
         self.speed = 5
         self.images = self._get_bird_images()
         self.non_spawned_border = NonSpawnedBorder(left=250, top=500, right=300, bottom=100)
-        self.math_function = self._get_math_function()
-        self.position = self._get_random_position()
-        self.function_position = BirdPosition(0, self.position.y)
+        self.current_position = self._get_random_position()
+        self.initial_position = BirdPosition(self.current_position.x, self.current_position.y)
 
     def move(self) -> None:
-        self.position.y = self.math_function(self.function_position.x, self.function_position.y)
-        self.position.x += 1
-        self.function_position.x += 1
+        self.current_position.x += 1
+        self.current_position.y = self._math_function(self.current_position.x)
+
+    def _math_function(self, x):
+        subfunction = self._get_math_subfunction()
+        return self.initial_position.y - subfunction(x - self.initial_position.x)
 
     @staticmethod
-    def _linear_function(x, y):
-        return y - 0.25 * x
+    def _linear_function(x):
+        return 0.25 * x
 
     @staticmethod
-    def _root_function(x, y):
-        return y - 10 * math.sqrt(x)
+    def _root_function(x):
+        return 10 * math.sqrt(x)
 
     @staticmethod
-    def _in_power_function(x, y):
-        return y - 0.002 * x ** 2
+    def _in_power_function(x):
+        return 0.002 * x ** 2
 
-    def _get_math_function(self):
+    def _get_math_subfunction(self):
         math_function_by_level = {
             LEVELS[0]: [self._root_function],
             LEVELS[1]: [self._root_function],
@@ -68,5 +70,5 @@ class Bird:
 
     def _get_random_position(self):
         x = randint(self.non_spawned_border.left, WINDOW_WIDTH - self.non_spawned_border.right)
-        y = self.math_function(x, WINDOW_HEIGHT)
+        y = randint(self.non_spawned_border.top, WINDOW_HEIGHT - self.non_spawned_border.bottom)
         return BirdPosition(x, y)
