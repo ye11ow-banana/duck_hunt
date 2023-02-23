@@ -1,6 +1,6 @@
 import pygame
 
-from consts import WINDOW_WIDTH, WINDOW_HEIGHT, background_colors
+from consts import WINDOW_WIDTH, WINDOW_HEIGHT, SPEEDS, BACKGROUND_COLORS
 from entities import Bird
 from utils import get_level, get_music
 
@@ -20,16 +20,18 @@ music = get_music(level)
 music.set_volume(0.05)
 
 birds = []
-bird_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(bird_timer, 2500)
-bird = Bird(level)
+spawn_timer = 0
 
 running = True
 while running:
-    screen.fill(background_colors[level])
-    screen.blit(bird.images.top[0], (bird.position.x, bird.position.y))
-    bird.move()
+    screen.fill(BACKGROUND_COLORS[level])
+    for bird in birds:
+        screen.blit(bird.get_current_image(), (bird.current_position.x, bird.current_position.y))
     screen.blit(background, (0, 0))
+    if spawn_timer == 20:
+        birds.append(Bird(level))
+        spawn_timer = 0
+    spawn_timer += 1
 
     pygame.display.update()
     for event in pygame.event.get():
@@ -41,7 +43,5 @@ while running:
                 music.play()
             elif event.key == pygame.K_2:
                 music.stop()
-        if event.type == bird_timer:
-            birds.append(Bird(level))
 
-    clock.tick(9)
+    clock.tick(SPEEDS[level])

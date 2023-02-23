@@ -13,11 +13,12 @@ class Bird:
         self.level = level
         self.speed = 5
         self.images = self._get_bird_images()
-        self.non_spawned_border = NonSpawnedBorder(left=250, top=500, right=300, bottom=100)
+        self.non_spawned_border = NonSpawnedBorder(left=200, top=500, right=500, bottom=100)
         self.current_position = self._get_random_position()
         self.initial_position = BirdPosition(self.current_position.x, self.current_position.y)
         self.previous_y = self.current_position.y
         self.serial_image_indexes = {}
+        self.math_subfunction = self._get_math_subfunction()
 
     def __getattribute__(self, item):
         if item == 'get_current_image':
@@ -25,17 +26,18 @@ class Bird:
         return super().__getattribute__(item)
 
     def get_current_image(self):
-        if self.previous_y - self.current_position.y < 0.3:
+        if self.previous_y - self.current_position.y < 0.5:
             return self._get_serial_image_by_direction('right')
-        elif self.previous_y - self.current_position.y < 10:
-            return self._get_serial_image_by_direction('top_right')
+        elif self.previous_y - self.current_position.y == 1 and \
+                self.initial_position.x - self.current_position.x == 0:
+            return self._get_serial_image_by_direction('top')
         else:
-            return self._get_serial_image_by_direction('right')
+            return self._get_serial_image_by_direction('top_right')
 
     def _get_serial_image_by_direction(self, direction):
-        index = self.serial_image_indexes.get(direction, 0) + 1
+        index = self.serial_image_indexes.get(direction, 0) + 0.25
         index = index if index < len(getattr(self.images, direction)) else 0
-        image = getattr(self.images, direction)[index]
+        image = getattr(self.images, direction)[int(index)]
         self.serial_image_indexes = {direction: index}
         return image
 
@@ -45,16 +47,19 @@ class Bird:
         self.current_position.y = self._math_function(self.current_position.x)
 
     def _math_function(self, x):
-        subfunction = self._get_math_subfunction()
-        return self.initial_position.y - subfunction(x - self.initial_position.x)
+        return self.initial_position.y - self.math_subfunction(x - self.initial_position.x)
+
+    def _up_function(self, x):
+        self.current_position.x -= 1
+        return self.initial_position.y - self.current_position.y + 1
 
     @staticmethod
     def _linear_function(x):
-        return 0.25 * x
+        return 0.5 * x
 
     @staticmethod
     def _root_function(x):
-        return 10 * math.sqrt(x)
+        return 15 * math.sqrt(x)
 
     @staticmethod
     def _in_power_function(x):
@@ -62,11 +67,15 @@ class Bird:
 
     def _get_math_subfunction(self):
         math_function_by_level = {
-            LEVELS[0]: [self._root_function],
-            LEVELS[1]: [self._root_function],
-            LEVELS[2]: [self._root_function]
+            LEVELS[0]: [self._up_function, self._linear_function],
+            LEVELS[1]: [self._up_function, self._linear_function, self._root_function],
+            LEVELS[2]: [
+                self._up_function, self._linear_function,
+                self._root_function, self._in_power_function
+            ]
         }
-        return math_function_by_level[self.level][0]
+        _list = math_function_by_level[self.level]
+        return _list[randint(0, len(_list) - 1)]
 
     def _get_speed(self) -> int:
         level_speeds = {LEVELS[0]: [5], LEVELS[1]: [5, 7], LEVELS[2]: [5, 7, 9]}
