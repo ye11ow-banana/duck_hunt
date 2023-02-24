@@ -19,6 +19,9 @@ pygame.display.set_caption('Duck Hunt')
 
 level = get_level()
 
+shoot_sound = pygame.mixer.Sound(f'sounds/shoot.mp3')
+shoot_sound.set_volume(0.05)
+
 music = get_music(level)
 music.set_volume(0.05)
 
@@ -32,7 +35,11 @@ running = True
 while running:
     screen.fill(BACKGROUND_COLORS[level])
     for bird in birds:
-        screen.blit(bird.get_current_image(), (bird.current_position.x, bird.current_position.y))
+        bird_image = bird.get_current_image()
+        bird.move()
+        bird_rect = bird_image.get_rect()
+        bird_rect.center = bird.current_position.x, bird.current_position.y
+        screen.blit(bird_image, bird_rect)
     screen.blit(background, (0, 0))
     if spawn_timer == 20:
         birds.append(Bird(level))
@@ -52,5 +59,15 @@ while running:
                 music.play()
             elif event.key == pygame.K_2:
                 music.stop()
+        if pygame.mouse.get_pressed()[0]:
+            shoot_sound.play()
+        mouse = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()[0]:
+            for bird in birds:
+                image = bird.current_image
+                bird_rect = image.get_rect()
+                bird_rect.center = bird.current_position.x, bird.current_position.y
+                if bird_rect.collidepoint(mouse):
+                    bird.is_killed = True
 
     clock.tick(SPEEDS[level])
