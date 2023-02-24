@@ -7,7 +7,10 @@ from utils import get_level, get_music
 icon = pygame.image.load('images/icon.png')
 pygame.display.set_icon(icon)
 background = pygame.image.load('images/background.webp')
-crosshair = pygame.image.load('images/crosshair.jpg')
+crosshair = pygame.image.load('images/crosshair.png')
+crosshair = pygame.transform.scale(
+    crosshair, (crosshair.get_width() // 3, crosshair.get_height() // 3)
+)
 
 clock = pygame.time.Clock()
 pygame.init()
@@ -22,6 +25,9 @@ music.set_volume(0.05)
 birds = []
 spawn_timer = 0
 
+pygame.mouse.set_visible(False)
+crosshair_rect = crosshair.get_rect()
+
 running = True
 while running:
     screen.fill(BACKGROUND_COLORS[level])
@@ -32,6 +38,9 @@ while running:
         birds.append(Bird(level))
         spawn_timer = 0
     spawn_timer += 1
+
+    screen.blit(crosshair, crosshair_rect)
+    crosshair_rect.center = pygame.mouse.get_pos()
 
     pygame.display.update()
     for event in pygame.event.get():
