@@ -8,6 +8,12 @@ from data_structures import BirdImages, NonSpawnedBorder, BirdPosition
 
 
 class Bird:
+    __slots__ = (
+        'is_killed', 'level', 'speed', 'images', 'non_spawned_border',
+        'current_position', 'initial_position', 'previous_y',
+        'serial_image_indexes', 'math_subfunction', 'current_image'
+    )
+
     def __init__(self, level):
         self.is_killed = False
         self.level = level
@@ -19,20 +25,23 @@ class Bird:
         self.previous_y = self.current_position.y
         self.serial_image_indexes = {}
         self.math_subfunction = self._get_math_subfunction()
+        self.current_image = self.get_current_image()
 
-    def __getattribute__(self, item):
-        if item == 'get_current_image':
-            self._move()
-        return super().__getattribute__(item)
+    def move(self) -> None:
+        self.previous_y = self.current_position.y
+        self.current_position.x += 1
+        self.current_position.y = self._math_function(self.current_position.x)
 
     def get_current_image(self):
         if self.previous_y - self.current_position.y < 0.5:
-            return self._get_serial_image_by_direction('right')
+            current_image = self._get_serial_image_by_direction('right')
         elif self.previous_y - self.current_position.y == 1 and \
                 self.initial_position.x - self.current_position.x == 0:
-            return self._get_serial_image_by_direction('top')
+            current_image = self._get_serial_image_by_direction('top')
         else:
-            return self._get_serial_image_by_direction('top_right')
+            current_image = self._get_serial_image_by_direction('top_right')
+        self.current_image = current_image
+        return current_image
 
     def _get_serial_image_by_direction(self, direction):
         index = self.serial_image_indexes.get(direction, 0) + 0.25
@@ -40,11 +49,6 @@ class Bird:
         image = getattr(self.images, direction)[int(index)]
         self.serial_image_indexes = {direction: index}
         return image
-
-    def _move(self) -> None:
-        self.previous_y = self.current_position.y
-        self.current_position.x += 1
-        self.current_position.y = self._math_function(self.current_position.x)
 
     def _math_function(self, x):
         return self.initial_position.y - self.math_subfunction(x - self.initial_position.x)
