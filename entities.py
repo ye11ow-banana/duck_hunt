@@ -8,6 +8,12 @@ from data_structures import BirdImages, NonSpawnedBorder, BirdPosition
 
 
 class Bird:
+    __slots__ = (
+        'is_killed', 'level', 'speed', 'images', 'non_spawned_border',
+        'current_position', 'initial_position', 'previous_y',
+        'serial_image_indexes', 'math_subfunction'
+    )
+
     def __init__(self, level):
         self.is_killed = False
         self.level = level
