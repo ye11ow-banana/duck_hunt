@@ -40,6 +40,9 @@ while running:
         bird_rect = bird_image.get_rect()
         bird_rect.center = bird.current_position.x, bird.current_position.y
         screen.blit(bird_image, bird_rect)
+        if bird.current_position.y > bird.initial_position.y:
+            birds.remove(bird)
+
     screen.blit(background, (0, 0))
     if spawn_timer == 20:
         birds.append(Bird(level))

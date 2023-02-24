@@ -30,9 +30,13 @@ class Bird:
     def move(self) -> None:
         self.previous_y = self.current_position.y
         self.current_position.x += 1
+        if self.is_killed:
+            self.math_subfunction = self._down_function
         self.current_position.y = self._math_function(self.current_position.x)
 
     def get_current_image(self):
+        if self.is_killed:
+            return self.images.bottom[0]
         if self.previous_y - self.current_position.y < 0.5:
             current_image = self._get_serial_image_by_direction('right')
         elif self.previous_y - self.current_position.y == 1 and \
@@ -52,6 +56,10 @@ class Bird:
 
     def _math_function(self, x):
         return self.initial_position.y - self.math_subfunction(x - self.initial_position.x)
+
+    def _down_function(self, x):
+        self.current_position.x -= 1
+        return self.initial_position.y - self.current_position.y - 5
 
     def _up_function(self, x):
         self.current_position.x -= 1
