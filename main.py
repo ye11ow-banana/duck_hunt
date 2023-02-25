@@ -19,9 +19,6 @@ pygame.display.set_caption('Duck Hunt')
 
 level = get_level()
 
-shoot_sound = pygame.mixer.Sound(f'sounds/shoot.mp3')
-shoot_sound.set_volume(0.05)
-
 music = get_music(level)
 music.set_volume(0.05)
 
@@ -62,8 +59,6 @@ while running:
                 music.play()
             elif event.key == pygame.K_2:
                 music.stop()
-        if pygame.mouse.get_pressed()[0]:
-            shoot_sound.play()
         mouse = pygame.mouse.get_pos()
         if pygame.mouse.get_pressed()[0]:
             for bird in birds:
