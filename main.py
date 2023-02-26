@@ -82,13 +82,15 @@ while running:
         screen.blit(restart_label, restart_label_rect)
         screen.blit(donate_label, (200, 350))
         screen.blit(card_label, (200, 425))
+        music.stop()
 
         mouse = pygame.mouse.get_pos()
         if restart_label_rect.collidepoint(mouse) and pygame.mouse.get_pressed()[0]:
             gameplay = True
             birds.clear()
-            music.stop()
             score = 0
+            time_to_spawn = 21
+            spawn_timer = 0
         continue
 
     screen.fill(BACKGROUND_COLORS[level])
