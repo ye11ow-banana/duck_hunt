@@ -89,6 +89,8 @@ while running:
             birds.clear()
             music.stop()
             score = 0
+            time_to_spawn = 21
+            spawn_timer = 0
         continue
 
     screen.fill(BACKGROUND_COLORS[level])
