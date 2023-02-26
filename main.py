@@ -26,7 +26,7 @@ headshot_sound = pygame.mixer.Sound(f'sounds/headshot.mp3')
 headshot_sound.set_volume(0.5)
 headshot_is_played = False
 
-birds = []
+birds: list[Bird] = []
 spawn_timer = 0
 
 crosshair_rect = crosshair.get_rect()

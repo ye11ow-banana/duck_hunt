@@ -37,5 +37,5 @@ class BirdPosition:
     E.g. left is the non spawn length
     from left border of the window.
     """
-    x: int
-    y: int
+    x: float
+    y: float
