@@ -1,5 +1,6 @@
 import math
 from random import randint
+from typing import Callable, Literal
 
 import pygame
 
@@ -14,7 +15,7 @@ class Bird:
         'serial_image_indexes', 'math_subfunction', 'current_image'
     )
 
-    def __init__(self, level):
+    def __init__(self, level: Literal['easy'] | Literal['medium'] | Literal['hard']):
         self.is_killed = False
         self.level = level
         self.speed = 5
@@ -23,16 +24,22 @@ class Bird:
         self.current_position = self._get_random_position()
         self.initial_position = BirdPosition(self.current_position.x, self.current_position.y)
         self.previous_y = self.current_position.y
-        self.serial_image_indexes = {}
+        self.serial_image_indexes: dict[
+            Literal['top'] | Literal['right'] | Literal['top_right'], float
+        ] = {}
         self.math_subfunction = self._get_math_subfunction()
         self.current_image = self.get_current_image()
 
     def move(self) -> None:
         self.previous_y = self.current_position.y
         self.current_position.x += 1
+        if self.is_killed:
+            self.math_subfunction = self._down_function
         self.current_position.y = self._math_function(self.current_position.x)
 
-    def get_current_image(self):
+    def get_current_image(self) -> pygame.Surface:
+        if self.is_killed:
+            return self.images.bottom[0]
         if self.previous_y - self.current_position.y < 0.5:
             current_image = self._get_serial_image_by_direction('right')
         elif self.previous_y - self.current_position.y == 1 and \
@@ -43,33 +50,39 @@ class Bird:
         self.current_image = current_image
         return current_image
 
-    def _get_serial_image_by_direction(self, direction):
+    def _get_serial_image_by_direction(
+            self, direction: Literal['top'] | Literal['right'] | Literal['top_right']
+    ) -> pygame.Surface:
         index = self.serial_image_indexes.get(direction, 0) + 0.25
         index = index if index < len(getattr(self.images, direction)) else 0
         image = getattr(self.images, direction)[int(index)]
         self.serial_image_indexes = {direction: index}
         return image
 
-    def _math_function(self, x):
+    def _math_function(self, x: float) -> float:
         return self.initial_position.y - self.math_subfunction(x - self.initial_position.x)
 
-    def _up_function(self, x):
+    def _down_function(self, x: float) -> float:
+        self.current_position.x -= 1
+        return self.initial_position.y - self.current_position.y - 5
+
+    def _up_function(self, x: float) -> float:
         self.current_position.x -= 1
         return self.initial_position.y - self.current_position.y + 1
 
     @staticmethod
-    def _linear_function(x):
+    def _linear_function(x: float) -> float:
         return 0.5 * x
 
     @staticmethod
-    def _root_function(x):
+    def _root_function(x: float) -> float:
         return 15 * math.sqrt(x)
 
     @staticmethod
-    def _in_power_function(x):
+    def _in_power_function(x: float) -> float:
         return 0.002 * x ** 2
 
-    def _get_math_subfunction(self):
+    def _get_math_subfunction(self) -> Callable[[float], float]:
         math_function_by_level = {
             LEVELS[0]: [self._up_function, self._linear_function],
             LEVELS[1]: [self._up_function, self._linear_function, self._root_function],
@@ -104,7 +117,7 @@ class Bird:
             bottom=bird_directions['bottom']
         )
 
-    def _get_random_position(self):
+    def _get_random_position(self) -> BirdPosition:
         x = randint(self.non_spawned_border.left, WINDOW_WIDTH - self.non_spawned_border.right)
         y = randint(self.non_spawned_border.top, WINDOW_HEIGHT - self.non_spawned_border.bottom)
         return BirdPosition(x, y)
