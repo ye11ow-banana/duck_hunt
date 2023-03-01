@@ -93,11 +93,6 @@ class Bird:
         _list = math_function_by_level[self._level]
         return _list[randint(0, len(_list) - 1)]
 
-    def _get_speed(self) -> int:
-        level_speeds = {LEVELS[0]: [5], LEVELS[1]: [5, 7], LEVELS[2]: [5, 7, 9]}
-        possible_speeds = level_speeds.get(self._level, [5])
-        return possible_speeds[randint(0, len(possible_speeds) - 1)]
-
     def _get_bird_images(self) -> BirdImages:
         bird_directions = {}
         for direction in 'top', 'top_right', 'right', 'bottom':
