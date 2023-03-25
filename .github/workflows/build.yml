@@ -20,16 +20,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Test with pytest
-        run: pytest --html=pytest-report.html .
-      - name: Upload pytest test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: pytest-report
-          path: pytest-report.html
+        run: pytest --html=report/pytest/report.html .
       - name: Lint with flake8
-        run: flake8 --format=html --htmldir=flake-report .
-      - name: Upload flake8 results
+        run: flake8 --format=html --htmldir=report/flake .
+      - name: Upload pytest and flake8 report
         uses: actions/upload-artifact@v3
         with:
-          name: flake8-report
-          path: flake-report
+          name: report
+          path: report
