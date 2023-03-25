@@ -20,6 +20,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Test with pytest
+        env:
+          SDL_VIDEODRIVER: "dummy"
+          SDL_AUDIODRIVER: "disk"
         run: pytest --html=report/pytest/report.html .
       - name: Lint with flake8
         run: flake8 --format=html --htmldir=report/flake8 .
